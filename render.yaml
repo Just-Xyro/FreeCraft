@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: freecraft
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python start-api.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"

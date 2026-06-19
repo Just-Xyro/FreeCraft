@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreeCraft — Free Minecraft Marketplace</title>
+    <meta
+      name="description"
+      content="Browse and download Minecraft marketplace content for free — addons, texture packs, worlds, skins, and more."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect x='2' y='2' width='10' height='10' fill='%234ade80'/%3E%3Crect x='14' y='2' width='10' height='10' fill='%234ade80'/%3E%3Crect x='26' y='2' width='8' height='8' fill='%234ade80'/%3E%3Crect x='2' y='14' width='10' height='10' fill='%2322c55e'/%3E%3Crect x='14' y='14' width='10' height='10' fill='%2316a34a'/%3E%3Crect x='2' y='26' width='10' height='8' fill='%234ade80'/%3E%3Crect x='14' y='26' width='10' height='8' fill='%234ade80'/%3E%3Crect x='26' y='14' width='8' height='20' fill='%2322c55e'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Background layers -->
+    <div class="bg-noise"></div>
+    <div class="bg-mesh"></div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- ═══════════════ HEADER ═══════════════ -->
+    <header class="header" id="siteHeader">
+      <div class="header-inner">
+        <div
+          class="logo"
+          onclick="goHome()"
+          role="button"
+          aria-label="FreeCraft home"
+        >
+          <div class="logo-icon" aria-hidden="true">
+            <div class="logo-grid">
+              <span></span><span></span><span></span> <span></span><span></span
+              ><span></span> <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">FREE<em>CRAFT</em></span>
+            <span class="logo-sub">Marketplace</span>
+          </div>
+        </div>
+
+        <nav class="nav" id="mainNav" aria-label="Main navigation">
+          <button
+            class="nav-btn active"
+            data-view="browse"
+            onclick="switchView('browse')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            Browse
+          </button>
+          <button
+            class="nav-btn"
+            data-view="search"
+            onclick="switchView('search')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            Search
+          </button>
+        </nav>
+
+        <div class="header-end">
+          <div class="api-status" id="statusBadge">
+            <span class="status-ring" id="statusRing"></span>
+            <span id="statusText">Connecting</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════ BROWSE VIEW ═══════════════ -->
+    <main id="viewBrowse" class="view active">
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-inner">
+          <div class="hero-badge">
+            <span class="badge-pulse"></span>
+            Free &nbsp;·&nbsp; No Account &nbsp;·&nbsp; No Limits
+          </div>
+
+          <h1 class="hero-title">
+            The Free Minecraft<br />
+            <span class="hero-accent">Marketplace</span>
+          </h1>
+
+          <p class="hero-desc">
+            Addons, texture packs, worlds, skins &amp; more —<br
+              class="br-desk"
+            />
+            all searchable, all free, all the time.
+          </p>
+
+          <div class="hero-search-wrap">
+            <div class="hero-search" id="heroSearch">
+              <svg
+                class="hs-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                id="heroInput"
+                type="text"
+                placeholder="Search anything…"
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Search marketplace"
+              />
+              <button id="heroBtn" onclick="triggerHeroSearch()" class="hs-btn">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-val">1000+</span>
+              <span class="stat-lbl">Items</span>
+            </div>
+            <div class="stat-div"></div>
+            <div class="stat-item">
+              <span class="stat-val">Free</span>
+              <span class="stat-lbl">Always</span>
+            </div>
+            <div class="stat-div"></div>
+            <div class="stat-item">
+              <span class="stat-val">Instant</span>
+              <span class="stat-lbl">Download</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Categories -->
+      <section class="section" id="categoriesSection">
+        <div class="section-inner">
+          <div class="section-hd">
+            <div>
+              <h2 class="section-title">Browse by Category</h2>
+              <p class="section-sub">
+                Pick a category to explore the marketplace
+              </p>
+            </div>
+          </div>
+
+          <div class="cat-grid">
+            <button
+              class="cat-card"
+              onclick="browseCategory('addon')"
+              style="--accent: #4ade80; --glow: rgba(74, 222, 128, 0.18)"
+            >
+              <div class="cat-bg"></div>
+              <div class="cat-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                  />
+                </svg>
+              </div>
+              <div class="cat-info">
+                <div class="cat-name">Add-Ons</div>
+                <div class="cat-desc">Gameplay mods &amp; behaviors</div>
+              </div>
+              <div class="cat-arrow-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+
+            <button
+              class="cat-card"
+              onclick="browseCategory('texture')"
+              style="--accent: #38bdf8; --glow: rgba(56, 189, 248, 0.18)"
+            >
+              <div class="cat-bg"></div>
+              <div class="cat-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="13.5" cy="6.5" r="1" />
+                  <circle cx="17.5" cy="10.5" r="1" />
+                  <circle cx="8.5" cy="7.5" r="1" />
+                  <circle cx="6.5" cy="12.5" r="1" />
+                  <path
+                    d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"
+                  />
+                </svg>
+              </div>
+              <div class="cat-info">
+                <div class="cat-name">Textures</div>
+                <div class="cat-desc">Resource &amp; texture packs</div>
+              </div>
+              <div class="cat-arrow-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+
+            <button
+              class="cat-card"
+              onclick="browseCategory('skin')"
+              style="--accent: #a78bfa; --glow: rgba(167, 139, 250, 0.18)"
+            >
+              <div class="cat-bg"></div>
+              <div class="cat-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div class="cat-info">
+                <div class="cat-name">Skins</div>
+                <div class="cat-desc">Character skin packs</div>
+              </div>
+              <div class="cat-arrow-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+
+            <button
+              class="cat-card"
+              onclick="browseCategory('mashup')"
+              style="--accent: #fb923c; --glow: rgba(251, 146, 60, 0.18)"
+            >
+              <div class="cat-bg"></div>
+              <div class="cat-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </div>
+              <div class="cat-info">
+                <div class="cat-name">Mashups</div>
+                <div class="cat-desc">World &amp; mashup packs</div>
+              </div>
+              <div class="cat-arrow-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+
+            <button
+              class="cat-card cat-wide"
+              onclick="browseCategory('newest')"
+              style="--accent: #f472b6; --glow: rgba(244, 114, 182, 0.18)"
+            >
+              <div class="cat-bg"></div>
+              <div class="cat-icon-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  />
+                </svg>
+              </div>
+              <div class="cat-info">
+                <div class="cat-name">New Arrivals</div>
+                <div class="cat-desc">
+                  The latest additions — freshest drops from the marketplace
+                </div>
+              </div>
+              <div class="cat-arrow-wrap">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Browse results -->
+      <section class="section" id="browseResultsSection" style="display: none">
+        <div class="section-inner">
+          <div class="section-hd">
+            <div>
+              <h2 class="section-title" id="browseTitle">Browsing</h2>
+              <p class="section-sub" id="browseSubtitle"></p>
+            </div>
+            <div class="section-actions">
+              <button
+                class="pill-btn"
+                id="loadMoreBtn"
+                onclick="loadMoreBrowse()"
+                style="display: none"
+              >
+                Load More
+              </button>
+              <button class="pill-btn secondary" onclick="backToCategories()">
+                ← Back
+              </button>
+            </div>
+          </div>
+          <div class="grid" id="browseGrid"></div>
+        </div>
+      </section>
+
+      <!-- Popular searches -->
+      <section class="section" id="suggestSection">
+        <div class="section-inner">
+          <div class="section-hd">
+            <h2 class="section-title">Popular Searches</h2>
+          </div>
+          <div class="chips-row">
+            <button class="chip" onclick="quickSearch('Actions & Stuff')">
+              ⚡ Actions &amp; Stuff
+            </button>
+            <button class="chip" onclick="quickSearch('Better on Bedrock')">
+              💎 Better on Bedrock
+            </button>
+            <button class="chip" onclick="quickSearch('Realistic Biomes')">
+              🌿 Realistic Biomes
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ═══════════════ SEARCH VIEW ═══════════════ -->
+    <main id="viewSearch" class="view">
+      <div class="search-view">
+        <!-- Search panel -->
+        <div class="search-panel">
+          <div class="search-field" id="searchBox">
+            <svg
+              class="sf-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search Minecraft marketplace content…"
+              autocomplete="off"
+              spellcheck="false"
+              aria-label="Search"
+            />
+            <button
+              class="sf-clear"
+              id="clearBtn"
+              aria-label="Clear"
+              style="display: none"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+            <button class="sf-go" id="searchBtn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              Search
+            </button>
+          </div>
+
+          <div class="filter-bar">
+            <span class="filter-label">Filter by:</span>
+            <div class="filter-chips" id="filterChips">
+              <button class="fchip active" data-type="name">All</button>
+              <button class="fchip" data-type="addon">Add-Ons</button>
+              <button class="fchip" data-type="texture">Textures</button>
+              <button class="fchip" data-type="skin">Skins</button>
+              <button class="fchip" data-type="mashup">Mashups</button>
+              <button class="fchip" data-type="newest">Newest</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results info -->
+        <div class="results-bar" id="resultsBar" style="display: none">
+          <div class="results-info">
+            <strong id="displayCount">0</strong> results for
+            <span class="results-query" id="queryLabel"></span>
+          </div>
+          <button class="pill-btn secondary sm" onclick="clearSearch()">
+            Clear
+          </button>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid" id="searchGrid">
+          <div class="empty-state" id="searchEmpty">
+            <div class="empty-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </div>
+            <h3>Find anything</h3>
+            <p>Search across thousands of free Minecraft items</p>
+            <div class="chips-row chips-center mt-lg">
+              <button class="chip sm" onclick="quickSearch('Actions & Stuff')">⚡ Actions &amp; Stuff</button>
+              <button class="chip sm" onclick="quickSearch('Better on Bedrock')">💎 Better on Bedrock</button>
+              <button class="chip sm" onclick="quickSearch('Realistic Biomes')">🌿 Realistic Biomes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="load-more-wrap" id="searchLoadMore" style="display: none">
+          <button
+            class="load-more-btn"
+            id="searchLoadMoreBtn"
+            onclick="loadMoreSearch()"
+          >
+            Load More Results
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <span class="footer-logo">FREE<em>CRAFT</em></span>
+        <span class="footer-sep">·</span>
+        Made by <strong>xyro.py</strong> on Discord
+        <span class="footer-sep">·</span>
+        <span>&copy; 2026</span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

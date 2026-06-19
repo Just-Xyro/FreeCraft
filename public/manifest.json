@@ -1,0 +1,13 @@
+{
+  "short_name": "FreeCraft",
+  "name": "FreeCraft — Free Minecraft Marketplace",
+  "description": "Browse and download Minecraft marketplace content for free",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4ade80",
+  "background_color": "#060b10",
+  "orientation": "portrait-primary",
+  "categories": ["games", "utilities"],
+  "lang": "en"
+}
