@@ -1,7 +1,7 @@
 {
-  "name": "xoid-mc-marketplace",
+  "name": "freecraft-marketplace",
   "version": "2.0.0",
-  "description": "Xoid MC - Premium Minecraft Addon Marketplace",
+  "description": "FreeCraft - Minecraft Bedrock Free Marketplace",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -12,7 +12,7 @@
     "free",
     "mcpe"
   ],
-  "author": "xoid.py",
+  "author": "xyro.py",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^22.13.11",
