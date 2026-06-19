@@ -1,7 +1,7 @@
 const API_BASE = (() => {
   const { hostname, protocol, port, origin } = window.location;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return `http://${hostname}:8000`;
+    return `https://freecraft.onrender.com`;
   }
   if (hostname.includes('replit') || hostname.includes('repl.co') || port === '5000') {
     return `${protocol}//${hostname}:8000`;
